@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 from numba import njit
 
 temperature=310 #Kelvin
-k_on=80 #1/seconds
-k_off=400 #1/seconds
-delta_t=0.00001 #seconds
+k_on=670 #1/seconds
+k_off=130 #1/seconds
+delta_t=0.000001 #seconds
 D=40000 #nanometer^2/second
 
 @njit         #Python compiler, useful to have a faster code
@@ -77,6 +77,7 @@ def evolution(N, D): #evolves the system for N time steps
   return velocity
 
 
+np.random.seed(54)
 speed=np.zeros(100) # use 100 velocities to draw an histogram
 for i in range(100):
   speed[i]=evolution(10000000, D)
