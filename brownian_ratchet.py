@@ -88,14 +88,16 @@ def gaussian(x, amp, mu, sigma):      #Gaussian function for fit
 # main
 
 np.random.seed(54)   #set seed for reproducibility
-velocities=np.zeros(1000) # use 100 velocities to draw an histogram
-for i in range(1000):
+velocities=np.zeros(100) # use 100 velocities to draw an histogram
+for i in range(100):
   velocities[i]=evolution(10000000, D) #evolve for 10^7 time steps
 
 n, bins, _ =plt.hist(velocities, bins=80, density=True) #histogram of velocities
 centers = 0.5 * (bins[:-1] + bins[1:]) #take the central x for each bin
 
-amp, mu, sigma=curve_fit(gaussian, centers, n)[0]
+initial_guess=[n.max(), np.mean(velocities), np.std(velocities)]
+
+amp, mu, sigma=curve_fit(gaussian, centers, n, p0=initial_guess)[0]
 
 plt.plot(centers, gaussian(centers, amp, mu, sigma))
 plt.title("Histogram of velocities with two-state system")
@@ -103,7 +105,5 @@ plt.xlabel("Velocity (nm/s)")
 plt.ylabel("Count")
 plt.show()
 
-print("Mean from gaussian: " + str(mu))
-print("Standard deviation from gaussian: " + str(sigma))
-print("True mean: " + str(np.mean(velocities))) #print mean and standard deviation
-print("True standard deviation: " + str(np.std(velocities)))
+print("Mean velocity: " + str(mu))
+print("Standard deviation: " + str(sigma))
