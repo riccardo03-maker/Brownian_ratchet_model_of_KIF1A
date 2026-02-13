@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
 from numba import njit
 
 temperature=310 #Kelvin
@@ -80,17 +81,29 @@ def evolution(N, D): #evolves the system for N time steps
   velocity=x/t
   return velocity
 
+def gaussian(x, amp, mu, sigma):      #Gaussian function for fit
+    return amp*np.exp(-(x-mu)*(x-mu)/(2*sigma*sigma))
+
+
+# main
 
 np.random.seed(54)   #set seed for reproducibility
-velocities=np.zeros(10000) # use 100 velocities to draw an histogram
-for i in range(10000):
+velocities=np.zeros(1000) # use 100 velocities to draw an histogram
+for i in range(1000):
   velocities[i]=evolution(10000000, D) #evolve for 10^7 time steps
 
-plt.hist(velocities, bins=10000) #histogram of velocities
+n, bins, _ =plt.hist(velocities, bins=80, density=True) #histogram of velocities
+centers = 0.5 * (bins[:-1] + bins[1:]) #take the central x for each bin
+
+amp, mu, sigma=curve_fit(gaussian, centers, n)[0]
+
+plt.plot(centers, gaussian(centers, amp, mu, sigma))
 plt.title("Histogram of velocities with two-state system")
 plt.xlabel("Velocity (nm/s)")
 plt.ylabel("Count")
 plt.show()
 
-print(np.mean(velocities)) #print mean and standard deviation
-print(np.std(velocities))
+print("Mean from gaussian: " + str(mu))
+print("Standard deviation from gaussian: " + str(sigma))
+print("True mean: " + str(np.mean(velocities))) #print mean and standard deviation
+print("True standard deviation: " + str(np.std(velocities)))
