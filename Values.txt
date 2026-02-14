@@ -7,3 +7,8 @@ Without switching and with 10000 simulations
 
 Mean velocity: 0.3418479421896788
 Standard deviation: 0.6425568639154674
+
+With both diffusion coefficients 40000 and 10000 simulations
+
+Mean velocity: 55.009955662073786
+Standard deviation: 38.954896627119716

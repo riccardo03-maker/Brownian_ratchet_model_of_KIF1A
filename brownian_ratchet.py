@@ -36,7 +36,7 @@ def potential(x): #the potential
   
 
 @njit  
-def mala_step_on(x, brownian):                          #integration step with check Metropolis-Hastings
+def metropolis_step_on(x, brownian):                          #integration step with check Metropolis-Hastings
     y=x-(force(x)*delta_t*D)+(math.sqrt(2*D)*brownian)  #candidate y
     
     log_pi_ratio=potential(x)-potential(y)
@@ -62,7 +62,7 @@ def evolution(N, D): #evolves the system for N time steps
     brownian=np.random.normal(0, math.sqrt(delta_t))
 
     if(state==0):
-      x, not_accepted=mala_step_on(x, brownian)
+      x, not_accepted=metropolis_step_on(x, brownian)
     if(not_accepted): #don't update position and time if the transition is not accepted
       continue
     if(state==1):
@@ -95,9 +95,9 @@ for i in range(10000):
 n, bins, _ =plt.hist(velocities, bins=80, density=True) #histogram of velocities
 centers = 0.5 * (bins[:-1] + bins[1:]) #take the central x for each bin
 
-initial_guess=[n.max(), np.mean(velocities), np.std(velocities)]
+initial_guess=[n.max(), np.mean(velocities), np.std(velocities)] #initial guess of the fit parameters
 
-amp, mu, sigma=curve_fit(gaussian, centers, n, p0=initial_guess)[0]
+amp, mu, sigma=curve_fit(gaussian, centers, n, p0=initial_guess)[0] #fit parameters
 
 plt.plot(centers, gaussian(centers, amp, mu, sigma))
 plt.title("Histogram of velocities with two-state system")
