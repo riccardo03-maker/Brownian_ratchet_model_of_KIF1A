@@ -76,3 +76,41 @@ def evolution_velocity(N, D_on, D_off, k_on, k_off, delta_t): #evolves the syste
 
 def gaussian(x, amp, mu, sigma):      #Gaussian function for fit
     return amp*np.exp(-(x-mu)*(x-mu)/(2*sigma*sigma))
+
+def evolution_position_time(N, D_on, D_off, k_on, k_off, delta_t): #to get the plot position/time
+    t=0
+    x=3.0 #start from a minimum of the potential
+    position=np.zeros(N) #vectors of position and time
+    time=np.zeros(N)
+    D=D_on
+    state=0 # 0 means potential on, 1 means potential off
+    index=0
+
+    for i in range(N):
+      brownian=np.random.normal(0, math.sqrt(delta_t))
+
+      if(state==0):
+        x, not_accepted=metropolis_step_on(x, brownian, delta_t, D)
+      if(not_accepted): #don't update position and time if the transition is not accepted
+        continue
+      if(state==1):
+        x=x+(math.sqrt(2*D)*brownian)
+
+      t=t+delta_t
+      position[index]=x
+      time[index]=t
+      index=index+1
+
+      if(state==0 and np.random.uniform()<=k_off*delta_t):  #changes of state
+        state=1
+        D=D_off
+        continue
+      if(state==1 and np.random.uniform()<=k_on*delta_t):
+        state=0
+        D=D_on
+        continue
+    
+    position=position[:-(N-index)]
+    time=time[:-(N-index)]
+    return position, time
+    #removes all 0s at the end of the vectors. The number of 0s depends on the number of transitions rejected
