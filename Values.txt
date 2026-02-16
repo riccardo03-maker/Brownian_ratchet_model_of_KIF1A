@@ -12,3 +12,5 @@ With both diffusion coefficients 40000 and 10000 simulations
 
 Mean velocity: 55.009955662073786
 Standard deviation: 38.954896627119716
+
+Good values to get high velocity: k_on=k_off=10000, D_on=D_off=50000
