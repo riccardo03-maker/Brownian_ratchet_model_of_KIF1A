@@ -1,5 +1,4 @@
 from evolution_functions import evolution_position_time
-import numpy as np
 import matplotlib.pyplot as plt
 
 N=1000000
